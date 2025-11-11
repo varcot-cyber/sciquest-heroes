@@ -179,6 +179,8 @@ authForm.addEventListener('submit', async (e) => {
                         window.location.href = 'parent-dashboard.html';
                     } else if (userAccountType === 'teacher') {
                         window.location.href = 'teacher-dashboard.html';
+                    } else if (userAccountType === 'student') {
+                        window.location.href = 'student-dashboard.html';
                     } else {
                         window.location.href = 'index.html';
                     }
@@ -206,6 +208,8 @@ authForm.addEventListener('submit', async (e) => {
                         window.location.href = 'parent-dashboard.html';
                     } else if (profile && profile.account_type === 'teacher') {
                         window.location.href = 'teacher-dashboard.html';
+                    } else if (profile && profile.account_type === 'student') {
+                        window.location.href = 'student-dashboard.html';
                     } else {
                         window.location.href = 'index.html';
                     }

@@ -17,7 +17,16 @@ async function checkAuthAndUpdateUI() {
             .maybeSingle();
 
         if (profile) {
-            addUserMenuToNavbar(profile);
+            if (profile.account_type === 'parent') {
+                window.location.href = 'parent-dashboard.html';
+                return;
+            } else if (profile.account_type === 'teacher') {
+                window.location.href = 'teacher-dashboard.html';
+                return;
+            } else if (profile.account_type === 'student') {
+                window.location.href = 'student-dashboard.html';
+                return;
+            }
         }
     }
 }
@@ -197,6 +206,8 @@ function getDashboardLink(accountType) {
         return 'parent-dashboard.html';
     } else if (accountType === 'teacher') {
         return 'teacher-dashboard.html';
+    } else if (accountType === 'student') {
+        return 'student-dashboard.html';
     }
     return 'index.html#avatars';
 }

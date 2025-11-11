@@ -11,6 +11,9 @@ const dropdownMenu = document.getElementById('dropdownMenu');
 const logoutBtn = document.getElementById('logoutBtn');
 const userAvatar = document.getElementById('userAvatar');
 const userName = document.getElementById('userName');
+const welcomeMessage = document.getElementById('welcomeMessage');
+const avatarDisplay = document.getElementById('avatarDisplay');
+const currentGrade = document.getElementById('currentGrade');
 
 async function checkAuth() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -36,65 +39,42 @@ async function checkAuth() {
         return;
     }
 
-    const currentPage = window.location.pathname;
-
-    if (currentPage.includes('parent-dashboard.html') && profile.account_type !== 'parent') {
-        if (profile.account_type === 'teacher') {
-            window.location.href = 'teacher-dashboard.html';
-        } else if (profile.account_type === 'student') {
-            window.location.href = 'student-dashboard.html';
-        } else {
-            window.location.href = 'index.html';
-        }
-        return;
-    }
-
-    if (currentPage.includes('teacher-dashboard.html') && profile.account_type !== 'teacher') {
+    if (profile.account_type !== 'student') {
         if (profile.account_type === 'parent') {
             window.location.href = 'parent-dashboard.html';
-        } else if (profile.account_type === 'student') {
-            window.location.href = 'student-dashboard.html';
+        } else if (profile.account_type === 'teacher') {
+            window.location.href = 'teacher-dashboard.html';
         } else {
             window.location.href = 'index.html';
         }
         return;
     }
 
-    loadUserProfile(session.user.id);
+    loadUserProfile(profile);
 }
 
-async function loadUserProfile(userId) {
+async function loadUserProfile(profile) {
     try {
-        const { data: profile, error } = await supabase
-            .from('user_profiles')
-            .select('*')
-            .eq('id', userId)
-            .maybeSingle();
+        const displayName = profile.first_name || profile.full_name || profile.username || 'Hero';
+        userName.textContent = displayName;
+        welcomeMessage.textContent = `Welcome back, ${displayName}!`;
 
-        if (error) throw error;
-
-        if (profile) {
-            let displayName;
-            if (profile.account_type === 'parent' || profile.account_type === 'teacher') {
-                displayName = profile.email;
-            } else {
-                displayName = profile.first_name || profile.full_name || profile.username || profile.email;
-            }
-            userName.textContent = displayName;
-
-            if (profile.avatar_url) {
-                userAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar">`;
-            } else if (profile.email && (profile.account_type === 'parent' || profile.account_type === 'teacher')) {
-                userAvatar.textContent = profile.email.charAt(0).toUpperCase();
-            } else if (profile.first_name) {
-                userAvatar.textContent = profile.first_name.charAt(0).toUpperCase();
-            } else if (profile.username) {
-                userAvatar.textContent = profile.username.charAt(0).toUpperCase();
-            } else {
-                const initial = profile.account_type.charAt(0).toUpperCase();
-                userAvatar.textContent = initial;
-            }
+        if (profile.avatar_url) {
+            userAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar">`;
+            avatarDisplay.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar">`;
+        } else if (profile.first_name) {
+            const initial = profile.first_name.charAt(0).toUpperCase();
+            userAvatar.textContent = initial;
+            avatarDisplay.innerHTML = `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #22c55e, #16a34a); font-size: 48px; font-weight: 800; color: white;">${initial}</div>`;
+        } else {
+            userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+            avatarDisplay.innerHTML = '<i class="fas fa-user text-white text-5xl"></i>';
         }
+
+        if (profile.grade_level) {
+            currentGrade.textContent = profile.grade_level;
+        }
+
     } catch (error) {
         console.error('Error loading profile:', error);
     }
