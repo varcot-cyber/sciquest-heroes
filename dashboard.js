@@ -20,6 +20,34 @@ async function checkAuth() {
         return;
     }
 
+    const currentPage = window.location.pathname.split('/').pop();
+
+    const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('account_type')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+    if (profile) {
+        if (currentPage === 'parent-dashboard.html' && profile.account_type !== 'parent') {
+            if (profile.account_type === 'teacher') {
+                window.location.href = 'teacher-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+            return;
+        }
+
+        if (currentPage === 'teacher-dashboard.html' && profile.account_type !== 'teacher') {
+            if (profile.account_type === 'parent') {
+                window.location.href = 'parent-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+            return;
+        }
+    }
+
     loadUserProfile(session.user.id);
 }
 

@@ -17,6 +17,14 @@ async function checkAuthAndUpdateUI() {
             .maybeSingle();
 
         if (profile) {
+            if (profile.account_type === 'parent') {
+                window.location.href = 'parent-dashboard.html';
+                return;
+            } else if (profile.account_type === 'teacher') {
+                window.location.href = 'teacher-dashboard.html';
+                return;
+            }
+
             addUserMenuToNavbar(profile);
         }
     }
