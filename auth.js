@@ -1,3 +1,4 @@
+console.log("Supabase URL:", import.meta.env.VITE_SUPABASE_URL);
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
