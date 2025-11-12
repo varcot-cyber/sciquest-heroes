@@ -1,4 +1,5 @@
 console.log("🔍 Supabase env check:", import.meta.env.VITE_SUPABASE_URL);
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -6,6 +7,7 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
+// ✅ Test query
 (async () => {
   const { data, error } = await supabase.from("stories").select("*").limit(1);
   if (error) {
@@ -14,10 +16,7 @@ const supabase = createClient(
     console.log("✅ Supabase connected successfully! Sample data:", data);
   }
 })();
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function checkAuthAndUpdateUI() {
     const { data: { session } } = await supabase.auth.getSession();
