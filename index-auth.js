@@ -1,4 +1,19 @@
 console.log("🔍 Supabase env check:", import.meta.env.VITE_SUPABASE_URL);
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
+(async () => {
+  const { data, error } = await supabase.from("YOUR_TABLE_NAME").select("*").limit(1);
+  if (error) {
+    console.error("❌ Supabase test query failed:", error.message);
+  } else {
+    console.log("✅ Supabase connected successfully! Sample data:", data);
+  }
+})();
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
